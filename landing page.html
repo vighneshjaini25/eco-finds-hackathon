@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFinds | Landing Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .product-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.3s ease-in-out;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .product-card-image {
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0.5rem;
+        }
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            min-width: 300px;
+            text-align: center;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-white">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-green-800 text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="#" class="text-2xl md:text-3xl font-bold mr-4">
+                <span class="text-white">Eco</span><span class="text-green-300">Finds</span>
+            </a>
+
+            <!-- Search Bar -->
+            <div class="flex-grow flex items-center mx-4 max-w-xl">
+                <input id="searchInput" type="text" placeholder="Search for products..." class="w-full px-4 py-2 rounded-l-full text-gray-900 focus:outline-none focus:ring-2 focus:ring-white">
+                <button id="searchButton" class="bg-green-400 p-2 rounded-r-full hover:bg-green-500 transition-colors">
+                    <svg class="h-6 w-6 text-gray-900" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Profile and Cart Links -->
+            <div class="flex items-center ml-4 space-x-4">
+                <!-- Profile Page Link -->
+                <button id="profileButton" class="flex items-center space-x-2 text-sm md:text-base font-semibold hover:text-green-300 transition-colors">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                    <span>Profile</span>
+                </button>
+                <!-- Cart Link -->
+                <a href="cart.html" class="flex items-center space-x-2 text-sm md:text-base font-semibold hover:text-green-300 transition-colors">
+                    <svg class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zM1 2v2h2l3.6 7.59-1.35 2.44C4.85 15.16 5.8 17 7.5 17H19v-2H7.5c-.36 0-.6-.2-.7-.4l.6-1.1L15.4 14l2.76-5.46a.5.5 0 00-.09-.45L17.1 7H8.79l-1.6-3.61c-.38-.83-1.2-1.39-2.19-1.39H1zm16 16c-1.1 0-1.99.9-1.99 2s.89 2 1.99 2 2-.9 2-2-.9-2-2-2z"/>
+                    </svg>
+                    <span>Cart</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Hero Section -->
+        <section class="mb-8">
+            <div class="relative h-64 md:h-96 rounded-xl overflow-hidden shadow-lg">
+                <img src="https://placehold.co/1200x500/000000/FFFFFF?text=Welcome+to+EcoFinds" alt="Hero Banner" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900 via-transparent to-transparent"></div>
+                <div class="absolute bottom-6 left-6 text-white p-4">
+                    <h1 class="text-3xl md:text-5xl font-extrabold drop-shadow-lg">Shop Sustainably</h1>
+                    <p class="mt-2 drop-shadow-md">Find the best eco-friendly products for your home and lifestyle.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Product Controls Section -->
+        <section class="mb-8 p-4 bg-gray-200 rounded-lg shadow-inner">
+            <div class="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                <h3 class="text-xl font-bold text-gray-800">Product Controls</h3>
+                <div class="flex space-x-2">
+                    <button id="filterButton" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-200">
+                        Filter
+                    </button>
+                    <button id="sortButton" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-200">
+                        Sort By
+                    </button>
+                    <button id="groupByButton" class="bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-green-700 transition duration-200">
+                        Group By
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Category Section -->
+        <section class="py-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Shop by Category</h2>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                <a href="#" onclick="showMessageBox('You clicked the Electronics category!')" class="bg-white p-4 rounded-xl shadow-sm text-center transition-transform transform hover:scale-105">
+                    <img src="https://placehold.co/100x100/e2e8f0/374151?text=Tech" alt="Electronics" class="w-20 h-20 mx-auto rounded-lg mb-2">
+                    <h3 class="text-md font-semibold text-gray-700">Electronics</h3>
+                </a>
+                <a href="#" onclick="showMessageBox('You clicked the Home Goods category!')" class="bg-white p-4 rounded-xl shadow-sm text-center transition-transform transform hover:scale-105">
+                    <img src="https://placehold.co/100x100/e2e8f0/374151?text=Home" alt="Home Goods" class="w-20 h-20 mx-auto rounded-lg mb-2">
+                    <h3 class="text-md font-semibold text-gray-700">Home Goods</h3>
+                </a>
+                <a href="#" onclick="showMessageBox('You clicked the Apparel category!')" class="bg-white p-4 rounded-xl shadow-sm text-center transition-transform transform hover:scale-105">
+                    <img src="https://placehold.co/100x100/e2e8f0/374151?text=Apparel" alt="Apparel" class="w-20 h-20 mx-auto rounded-lg mb-2">
+                    <h3 class="text-md font-semibold text-gray-700">Apparel</h3>
+                </a>
+                <a href="#" onclick="showMessageBox('You clicked the Books category!')" class="bg-white p-4 rounded-xl shadow-sm text-center transition-transform transform hover:scale-105">
+                    <img src="https://placehold.co/100x100/e2e8f0/374151?text=Books" alt="Books" class="w-20 h-20 mx-auto rounded-lg mb-2">
+                    <h3 class="text-md font-semibold text-gray-700">Books</h3>
+                </a>
+                <a href="#" onclick="showMessageBox('You clicked the Beauty category!')" class="bg-white p-4 rounded-xl shadow-sm text-center transition-transform transform hover:scale-105">
+                    <img src="https://placehold.co/100x100/e2e8f0/374151?text=Beauty" alt="Beauty" class="w-20 h-20 mx-auto rounded-lg mb-2">
+                    <h3 class="text-md font-semibold text-gray-700">Beauty</h3>
+                </a>
+                <a href="#" onclick="showMessageBox('You clicked the Outdoors category!')" class="bg-white p-4 rounded-xl shadow-sm text-center transition-transform transform hover:scale-105">
+                    <img src="https://placehold.co/100x100/e2e8f0/374151?text=Outdoors" alt="Outdoors" class="w-20 h-20 mx-auto rounded-lg mb-2">
+                    <h3 class="text-md font-semibold text-gray-700">Outdoors</h3>
+                </a>
+            </div>
+        </section>
+
+        <!-- Product Search Results Section -->
+        <section class="py-8">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6" id="resultsTitle">Featured Products</h2>
+            <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Product Card 1 -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-md text-center" onclick="showProductDetails('Organic T-Shirt', '$29.99')">
+                    <img src="https://placehold.co/400x400/f3f4f6/374151?text=Organic+T-Shirt" alt="Organic T-Shirt" class="w-full product-card-image mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Organic T-Shirt</h3>
+                    <p class="text-gray-600">$29.99</p>
+                </div>
+                <!-- Product Card 2 -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-md text-center" onclick="showProductDetails('Reusable Bottle', '$19.99')">
+                    <img src="https://placehold.co/400x400/f3f4f6/374151?text=Reusable+Bottle" alt="Reusable Bottle" class="w-full product-card-image mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Reusable Bottle</h3>
+                    <p class="text-gray-600">$19.99</p>
+                </div>
+                <!-- Product Card 3 -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-md text-center" onclick="showProductDetails('Bamboo Toothbrush', '$4.99')">
+                    <img src="https://placehold.co/400x400/f3f4f6/374151?text=Bamboo+Toothbrush" alt="Bamboo Toothbrush" class="w-full product-card-image mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Bamboo Toothbrush</h3>
+                    <p class="text-gray-600">$4.99</p>
+                </div>
+                <!-- Product Card 4 -->
+                <div class="product-card bg-white p-6 rounded-xl shadow-md text-center" onclick="showProductDetails('Recycled Backpack', '$49.99')">
+                    <img src="https://placehold.co/400x400/f3f4f6/374151?text=Recycled+Backpack" alt="Recycled Backpack" class="w-full product-card-image mb-4">
+                    <h3 class="text-lg font-bold text-gray-900">Recycled Backpack</h3>
+                    <p class="text-gray-600">$49.99</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="message-box">
+        <h3 class="text-lg font-semibold mb-2">Message</h3>
+        <p id="messageText" class="text-gray-700 mb-4"></p>
+        <button id="closeMessageBox" class="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors">Close</button>
+    </div>
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        // Sample product data
+        const allProducts = [
+            { name: 'Organic T-Shirt', price: '$29.99', image: 'https://placehold.co/400x400/f3f4f6/374151?text=Organic+T-Shirt', category: 'Apparel' },
+            { name: 'Reusable Bottle', price: '$19.99', image: 'https://placehold.co/400x400/f3f4f6/374151?text=Reusable+Bottle', category: 'Home Goods' },
+            { name: 'Bamboo Toothbrush', price: '$4.99', image: 'https://placehold.co/400x400/f3f4f6/374151?text=Bamboo+Toothbrush', category: 'Beauty' },
+            { name: 'Recycled Backpack', price: '$49.99', image: 'https://placehold.co/400x400/f3f4f6/374151?text=Recycled+Backpack', category: 'Apparel' },
+            { name: 'Solar Charger', price: '$65.00', image: 'https://placehold.co/400x400/f3f4f6/374151?text=Solar+Charger', category: 'Electronics' },
+            { name: 'Eco-friendly Yoga Mat', price: '$45.00', image: 'https://placehold.co/400x400/f3f4f6/374151?text=Yoga+Mat', category: 'Outdoors' },
+        ];
+
+        const searchInput = document.getElementById('searchInput');
+        const searchButton = document.getElementById('searchButton');
+        const productGrid = document.getElementById('productGrid');
+        const resultsTitle = document.getElementById('resultsTitle');
+        const profileButton = document.getElementById('profileButton');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const closeMessageBox = document.getElementById('closeMessageBox');
+        const overlay = document.getElementById('overlay');
+        const filterButton = document.getElementById('filterButton');
+        const sortButton = document.getElementById('sortButton');
+        const groupByButton = document.getElementById('groupByButton');
+
+        // Function to show the custom message box
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // Function to hide the custom message box
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // Event listener for the close button
+        closeMessageBox.addEventListener('click', hideMessageBox);
+        overlay.addEventListener('click', hideMessageBox);
+
+        // Profile button functionality
+        profileButton.addEventListener('click', () => {
+            showMessageBox('This button will take you to the profile page!');
+        });
+        
+        // Product Controls functionality
+        filterButton.addEventListener('click', () => {
+            showMessageBox('Filter options would appear here!');
+        });
+        sortButton.addEventListener('click', () => {
+            showMessageBox('Sort options (e.g., price low to high, name A-Z) would appear here!');
+        });
+        groupByButton.addEventListener('click', () => {
+            showMessageBox('Group by options (e.g., by category, by brand) would appear here!');
+        });
+
+        // Function to render products
+        function renderProducts(products) {
+            productGrid.innerHTML = ''; // Clear previous results
+            if (products.length === 0) {
+                productGrid.innerHTML = '<div class="col-span-full text-center py-10 text-gray-500 text-lg">No products found. Please try a different search.</div>';
+                resultsTitle.textContent = '0 Results Found';
+            } else {
+                products.forEach(product => {
+                    const productCard = `
+                        <div class="product-card bg-white p-6 rounded-xl shadow-md text-center" onclick="showProductDetails('${product.name}', '${product.price}')">
+                            <img src="${product.image}" alt="${product.name}" class="w-full product-card-image mb-4">
+                            <h3 class="text-lg font-bold text-gray-900">${product.name}</h3>
+                            <p class="text-gray-600">${product.price}</p>
+                        </div>
+                    `;
+                    productGrid.innerHTML += productCard;
+                });
+                resultsTitle.textContent = 'Search Results';
+            }
+        }
+
+        // New function to handle product clicks
+        function showProductDetails(name, price) {
+            showMessageBox(`You clicked on: ${name}. The price is ${price}.`);
+        }
+
+        // Search functionality
+        searchButton.addEventListener('click', () => {
+            const query = searchInput.value.toLowerCase();
+            const filteredProducts = allProducts.filter(product =>
+                product.name.toLowerCase().includes(query)
+            );
+            renderProducts(filteredProducts);
+        });
+
+        // Initial render of all products
+        renderProducts(allProducts);
+    </script>
+</body>
+</html>

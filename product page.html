@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoFinds | Product Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5;
+        }
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 2rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: none;
+            min-width: 300px;
+            text-align: center;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        .thumbnail-active {
+            outline: 3px solid #16a34a; /* Tailwind's green-600 */
+        }
+        .stars {
+            color: #f59e0b; /* Tailwind's amber-500 */
+        }
+        .star-rating label {
+            font-size: 2rem;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .star-rating input[type="radio"] {
+            display: none;
+        }
+        .star-rating input[type="radio"]:checked ~ label {
+            color: #f59e0b;
+        }
+        .star-rating label:hover,
+        .star-rating label:hover ~ label {
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Top Navigation Bar -->
+    <header class="bg-green-800 text-white sticky top-0 z-50 shadow-md">
+        <div class="container mx-auto px-4 py-2 flex items-center justify-between">
+            <!-- Logo -->
+            <a href="landing-page.html" class="text-2xl md:text-3xl font-bold mr-4">
+                <span class="text-white">Eco</span><span class="text-green-300">Finds</span>
+            </a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8 space-y-12">
+        <div class="flex flex-col lg:flex-row gap-8 lg:gap-16">
+
+            <!-- Product Image Gallery -->
+            <div class="w-full lg:w-1/2 flex flex-col items-center">
+                <div class="relative w-full aspect-square rounded-xl overflow-hidden shadow-lg mb-4">
+                    <img id="main-image" src="https://placehold.co/800x800/86efac/0f172a?text=Loading..." alt="Main product image" class="w-full h-full object-cover transition-opacity duration-300 ease-in-out">
+                </div>
+                <div id="thumbnail-grid" class="grid grid-cols-4 gap-4 w-full">
+                    <!-- Thumbnails will be dynamically loaded here -->
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="w-full lg:w-1/2 bg-white p-8 rounded-xl shadow-lg">
+                <a href="javascript:history.back()" class="text-green-600 font-semibold flex items-center mb-4 transition-colors hover:text-green-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                    </svg>
+                    Go Back
+                </a>
+                <div id="product-details">
+                    <h1 id="product-name" class="text-3xl md:text-4xl font-extrabold text-gray-900 mb-2"></h1>
+                    <p id="product-price" class="text-green-600 text-3xl md:text-4xl font-bold mb-6"></p>
+
+                    <div class="mb-6 text-gray-700">
+                        <h2 class="text-xl font-semibold mb-2">Product Description</h2>
+                        <p id="product-description" class="leading-relaxed"></p>
+                    </div>
+                    
+                    <div class="flex items-center space-x-4 mb-8">
+                        <span class="text-lg font-semibold text-gray-700">Quantity:</span>
+                        <input type="number" id="quantity" value="1" min="1" class="w-20 rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 text-center">
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button id="addToCartBtn" class="bg-green-600 text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-green-700 transition-colors flex-grow">
+                            Add to Cart
+                        </button>
+                        <button id="buyNowBtn" class="bg-gray-900 text-white px-8 py-3 rounded-full font-bold shadow-md hover:bg-gray-800 transition-colors flex-grow">
+                            Buy Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- --- -->
+
+        <!-- Related Products Section -->
+        <section class="mt-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">You might also like...</h2>
+            <div id="related-products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Related products will be dynamically loaded here -->
+            </div>
+        </section>
+
+        <!-- --- -->
+
+        <!-- Customer Reviews Section -->
+        <section class="mt-12">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Customer Reviews</h2>
+            <div id="reviews-container" class="space-y-6">
+                <!-- Reviews will be dynamically loaded here -->
+            </div>
+        </section>
+
+        <!-- --- -->
+        
+        <!-- Review Submission Form -->
+        <section class="mt-12 bg-white p-8 rounded-xl shadow-lg">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6">Write a Review</h2>
+            <form id="review-form" class="space-y-4">
+                <div>
+                    <label for="review-name" class="block text-sm font-medium text-gray-700">Your Name</label>
+                    <input type="text" id="review-name" name="review-name" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500">
+                </div>
+                <div>
+                    <label for="review-rating" class="block text-sm font-medium text-gray-700">Your Rating</label>
+                    <div class="star-rating flex flex-row-reverse justify-end mt-1">
+                        <input type="radio" id="star5" name="review-rating" value="5" required class="hidden" /><label for="star5" class="ml-1 text-2xl">★</label>
+                        <input type="radio" id="star4" name="review-rating" value="4" class="hidden" /><label for="star4" class="ml-1 text-2xl">★</label>
+                        <input type="radio" id="star3" name="review-rating" value="3" class="hidden" /><label for="star3" class="ml-1 text-2xl">★</label>
+                        <input type="radio" id="star2" name="review-rating" value="2" class="hidden" /><label for="star2" class="ml-1 text-2xl">★</label>
+                        <input type="radio" id="star1" name="review-rating" value="1" class="hidden" /><label for="star1" class="ml-1 text-2xl">★</label>
+                    </div>
+                </div>
+                <div>
+                    <label for="review-comment" class="block text-sm font-medium text-gray-700">Your Review</label>
+                    <textarea id="review-comment" name="review-comment" rows="4" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500"></textarea>
+                </div>
+                <button type="submit" class="w-full bg-green-600 text-white font-bold py-3 px-6 rounded-full shadow-md hover:bg-green-700 transition-colors">
+                    Submit Review
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- Custom Message Box -->
+    <div id="messageBox" class="message-box">
+        <h3 id="messageTitle" class="text-lg font-semibold mb-2"></h3>
+        <p id="messageText" class="text-gray-700 mb-4"></p>
+        <button id="closeMessageBox" class="bg-green-500 text-white px-4 py-2 rounded-full hover:bg-green-600 transition-colors">Close</button>
+    </div>
+    <div id="overlay" class="overlay"></div>
+
+    <script>
+        // Simulated "backend" database
+        const mockDatabase = {
+            'recycled-backpack': {
+                id: 'recycled-backpack',
+                name: 'Recycled Backpack',
+                price: '$49.99',
+                description: 'This eco-friendly backpack is made from 100% recycled plastic bottles, helping to reduce waste and protect our planet. It features a padded laptop sleeve, multiple internal pockets for organization, and comfortable, breathable shoulder straps. Durable, stylish, and sustainable—the perfect companion for your daily adventures.',
+                images: [
+                    { alt: 'Front view', url: 'https://placehold.co/800x800/86efac/0f172a?text=Recycled+Backpack' },
+                    { alt: 'Side view', url: 'https://placehold.co/400x400/86efac/0f172a?text=Side+View' },
+                    { alt: 'Inside view', url: 'https://placehold.co/400x400/86efac/0f172a?text=Inside' },
+                    { alt: 'Key Features', url: 'https://placehold.co/400x400/86efac/0f172a?text=Key+Features' }
+                ],
+                reviews: [
+                    { name: 'Jane Doe', rating: 5, date: '2023-10-25', comment: 'Absolutely love this backpack! The quality is great and it feels good to know I\'m using a sustainable product.' },
+                    { name: 'John Smith', rating: 4, date: '2023-10-22', comment: 'Stylish and comfortable. It holds everything I need for my daily commute. The zippers could be a little smoother, but overall very happy.' }
+                ]
+            },
+            'bamboo-toothbrush': {
+                id: 'bamboo-toothbrush',
+                name: 'Bamboo Toothbrush',
+                price: '$4.99',
+                description: 'A biodegradable toothbrush with a handle made from sustainably grown bamboo. The bristles are soft yet effective, providing a gentle clean while being kind to the planet.',
+                images: [
+                    { alt: 'Bamboo Toothbrush', url: 'https://placehold.co/800x800/86efac/0f172a?text=Bamboo+Toothbrush' },
+                    { alt: 'Toothbrush pack', url: 'https://placehold.co/400x400/86efac/0f172a?text=Pack+of+4' }
+                ]
+            },
+            'reusable-bottle': {
+                id: 'reusable-bottle',
+                name: 'Reusable Bottle',
+                price: '$19.99',
+                description: 'This durable, stainless steel bottle is designed to keep your drinks hot or cold for hours. It helps reduce single-use plastic waste and is perfect for daily use, hiking, or travel.',
+                images: [
+                    { alt: 'Reusable Bottle', url: 'https://placehold.co/800x800/86efac/0f172a?text=Reusable+Bottle' },
+                    { alt: 'Bottle in hand', url: 'https://placehold.co/400x400/86efac/0f172a?text=In+Hand' }
+                ]
+            },
+            'organic-tshirt': {
+                id: 'organic-tshirt',
+                name: 'Organic T-Shirt',
+                price: '$29.99',
+                description: 'Made from 100% certified organic cotton, this t-shirt is incredibly soft, breathable, and gentle on your skin. A sustainable staple for any wardrobe.',
+                images: [
+                    { alt: 'Organic T-Shirt', url: 'https://placehold.co/800x800/86efac/0f172a?text=Organic+T-Shirt' },
+                    { alt: 'T-Shirt material', url: 'https://placehold.co/400x400/86efac/0f172a?text=Material' }
+                ]
+            }
+        };
+
+        let currentProduct = null;
+
+        // DOM Elements
+        const mainImage = document.getElementById('main-image');
+        const thumbnailGrid = document.getElementById('thumbnail-grid');
+        const productName = document.getElementById('product-name');
+        const productPrice = document.getElementById('product-price');
+        const productDescription = document.getElementById('product-description');
+        const quantityInput = document.getElementById('quantity');
+        const addToCartBtn = document.getElementById('addToCartBtn');
+        const buyNowBtn = document.getElementById('buyNowBtn');
+        const messageBox = document.getElementById('messageBox');
+        const messageTitle = document.getElementById('messageTitle');
+        const messageText = document.getElementById('messageText');
+        const closeMessageBox = document.getElementById('closeMessageBox');
+        const overlay = document.getElementById('overlay');
+        const relatedProductsGrid = document.getElementById('related-products-grid');
+        const reviewsContainer = document.getElementById('reviews-container');
+        const reviewForm = document.getElementById('review-form');
+
+        // Function to show the custom message box
+        function showMessageBox(title, message) {
+            messageTitle.textContent = title;
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // Function to hide the custom message box
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // Event listener for the close button
+        closeMessageBox.addEventListener('click', hideMessageBox);
+        overlay.addEventListener('click', hideMessageBox);
+
+        // Simulated API call to fetch product data
+        async function fetchProductData(productId) {
+            showMessageBox('Loading...', 'Fetching product details...');
+            // Simulate network delay
+            return new Promise(resolve => {
+                setTimeout(() => {
+                    const product = mockDatabase[productId];
+                    if (product) {
+                        resolve(product);
+                    } else {
+                        resolve(null);
+                    }
+                    hideMessageBox();
+                }, 1500);
+            });
+        }
+
+        // Function to render product details
+        function renderProduct(product) {
+            if (!product) {
+                showMessageBox('Error', 'Product not found.');
+                return;
+            }
+
+            currentProduct = product; // Set the current product
+
+            productName.textContent = product.name;
+            productPrice.textContent = product.price;
+            productDescription.textContent = product.description;
+            
+            // Render thumbnails
+            thumbnailGrid.innerHTML = '';
+            product.images.forEach((img, index) => {
+                const thumbnail = document.createElement('img');
+                thumbnail.src = img.url;
+                thumbnail.alt = img.alt;
+                thumbnail.className = `thumbnail w-full aspect-square rounded-xl cursor-pointer hover:ring-2 hover:ring-green-500 transition-shadow duration-200 ease-in-out shadow-md`;
+                if (index === 0) {
+                    thumbnail.classList.add('thumbnail-active');
+                    mainImage.src = img.url;
+                }
+                thumbnail.addEventListener('click', () => {
+                    mainImage.src = img.url;
+                    document.querySelector('.thumbnail-active')?.classList.remove('thumbnail-active');
+                    thumbnail.classList.add('thumbnail-active');
+                });
+                thumbnailGrid.appendChild(thumbnail);
+            });
+
+            // Render reviews
+            renderReviews();
+        }
+
+        function renderReviews() {
+            reviewsContainer.innerHTML = '';
+            if (currentProduct.reviews && currentProduct.reviews.length > 0) {
+                currentProduct.reviews.forEach(review => {
+                    const reviewEl = document.createElement('div');
+                    reviewEl.className = 'bg-gray-50 p-6 rounded-lg shadow-inner';
+                    reviewEl.innerHTML = `
+                        <div class="flex items-center mb-2">
+                            <span class="font-semibold text-gray-900 mr-2">${review.name}</span>
+                            <span class="text-sm text-gray-500">${review.date}</span>
+                        </div>
+                        <div class="mb-2">
+                            <span class="stars">${'★'.repeat(review.rating)}</span><span class="text-gray-300">${'★'.repeat(5 - review.rating)}</span>
+                        </div>
+                        <p class="text-gray-700 leading-relaxed">${review.comment}</p>
+                    `;
+                    reviewsContainer.appendChild(reviewEl);
+                });
+            } else {
+                reviewsContainer.innerHTML = `<p class="text-gray-500">No reviews yet. Be the first to leave one!</p>`;
+            }
+        }
+
+
+        // Function to render related products
+        function renderRelatedProducts(currentProductId) {
+            const allProductIds = Object.keys(mockDatabase);
+            const relatedProductIds = allProductIds.filter(id => id !== currentProductId);
+            
+            // Randomly select up to 3 related products
+            const shuffled = relatedProductIds.sort(() => 0.5 - Math.random());
+            const selectedIds = shuffled.slice(0, 3);
+            
+            relatedProductsGrid.innerHTML = '';
+
+            selectedIds.forEach(id => {
+                const product = mockDatabase[id];
+                const card = document.createElement('a');
+                card.href = `product-page.html?productId=${product.id}`;
+                card.className = `bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-200 ease-in-out overflow-hidden transform hover:-translate-y-1`;
+                card.innerHTML = `
+                    <div class="w-full aspect-square overflow-hidden">
+                        <img src="${product.images[0].url}" alt="${product.name}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="p-4">
+                        <h3 class="text-lg font-bold text-gray-900 mb-1">${product.name}</h3>
+                        <p class="text-green-600 font-semibold">${product.price}</p>
+                    </div>
+                `;
+                relatedProductsGrid.appendChild(card);
+            });
+        }
+
+        // Handle Add to Cart action
+        addToCartBtn.addEventListener('click', async () => {
+            const quantity = quantityInput.value;
+            showMessageBox('Processing...', `Adding ${quantity} item(s) to your cart...`);
+            // Simulate API call to add to cart
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            showMessageBox('Success!', `Added ${quantity} ${productName.textContent}(s) to your cart.`);
+        });
+
+        // Handle Buy Now action
+        buyNowBtn.addEventListener('click', async () => {
+            const quantity = quantityInput.value;
+            showMessageBox('Processing...', `Initiating checkout for ${quantity} item(s)...`);
+            // Simulate API call for checkout
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            showMessageBox('Redirecting...', `You are now proceeding to checkout.`);
+            // In a real app, this would redirect to a checkout page
+        });
+
+        // Handle review form submission
+        reviewForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('review-name').value;
+            const rating = document.querySelector('input[name="review-rating"]:checked')?.value || 0;
+            const comment = document.getElementById('review-comment').value;
+
+            if (currentProduct && name && rating && comment) {
+                const newReview = {
+                    name,
+                    rating: parseInt(rating, 10),
+                    comment,
+                    date: new Date().toISOString().slice(0, 10)
+                };
+
+                // Add the new review to our mock database
+                if (!currentProduct.reviews) {
+                    currentProduct.reviews = [];
+                }
+                currentProduct.reviews.unshift(newReview); // Add to the beginning
+
+                // Re-render reviews
+                renderReviews();
+
+                // Clear the form
+                reviewForm.reset();
+                showMessageBox('Review Submitted!', 'Thank you for your feedback.');
+            } else {
+                showMessageBox('Error', 'Please fill out all fields.');
+            }
+        });
+
+        // Initial load
+        window.addEventListener('load', async () => {
+            // Get product ID from URL parameter, default to 'recycled-backpack'
+            const params = new URLSearchParams(window.location.search);
+            const productId = params.get('productId') || 'recycled-backpack'; 
+            
+            const product = await fetchProductData(productId);
+            renderProduct(product);
+            renderRelatedProducts(productId);
+        });
+    </script>
+</body>
+</html>
