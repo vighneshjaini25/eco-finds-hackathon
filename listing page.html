@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eco Finds My Listings</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8F9FA;
+        }
+        .listing-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4">
+
+    <div class="bg-white rounded-3xl shadow-xl max-w-4xl w-full p-8 md:p-12">
+        <!-- Logo and Title -->
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center space-x-4">
+                <img src="https://placehold.co/60x60/10B981/ffffff?text=Eco" alt="Eco Finds Logo" class="rounded-full shadow-lg">
+                <h1 class="text-4xl font-bold text-gray-800">My Listings</h1>
+            </div>
+            <div class="flex items-center space-x-2">
+                <button id="add-new-btn" class="flex items-center space-x-2 px-4 py-2 bg-emerald-600 text-white rounded-full font-bold shadow-lg hover:bg-emerald-700 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                    <span>Add new</span>
+                </button>
+                <button id="profile-btn" class="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 font-bold hover:bg-gray-300 transition-colors duration-200">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Search, Sort, and Filter Controls -->
+        <div class="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4 mb-8">
+            <div class="relative flex-grow w-full">
+                <input type="text" id="search-input" placeholder="Search listings..." class="w-full px-4 py-3 pl-10 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+            </div>
+            <div class="flex space-x-2 w-full sm:w-auto">
+                <button id="sort-button" class="flex-grow px-6 py-3 bg-emerald-50 text-emerald-800 rounded-xl font-medium hover:bg-emerald-100 transition-colors duration-200">Sort</button>
+                <button id="filter-button" class="flex-grow px-6 py-3 bg-emerald-50 text-emerald-800 rounded-xl font-medium hover:bg-emerald-100 transition-colors duration-200">Filter</button>
+                <button id="groupby-button" class="flex-grow px-6 py-3 bg-emerald-50 text-emerald-800 rounded-xl font-medium hover:bg-emerald-100 transition-colors duration-200">Group by</button>
+            </div>
+        </div>
+
+        <!-- Listings List -->
+        <div id="listings-list" class="space-y-6">
+            <!-- Listing items will be dynamically inserted here by JavaScript -->
+        </div>
+
+        <!-- Custom Alert Message Box -->
+        <div id="alert-box" class="hidden fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50 p-4">
+            <div class="bg-white rounded-xl p-8 max-w-sm w-full text-center shadow-2xl">
+                <h3 id="alert-title" class="text-2xl font-bold text-emerald-600 mb-4"></h3>
+                <p id="alert-message" class="text-gray-700 mb-6"></p>
+                <button id="alert-close" class="px-6 py-2 bg-emerald-500 text-white rounded-lg font-semibold hover:bg-emerald-600 transition-colors">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const listingsList = document.getElementById('listings-list');
+            const searchInput = document.getElementById('search-input');
+            const sortButton = document.getElementById('sort-button');
+            const filterButton = document.getElementById('filter-button');
+            const groupByButton = document.getElementById('groupby-button');
+            const addNewButton = document.getElementById('add-new-btn');
+            const profileButton = document.getElementById('profile-btn');
+            
+            // Custom alert box functionality
+            const alertBox = document.getElementById('alert-box');
+            const alertTitle = document.getElementById('alert-title');
+            const alertMessage = document.getElementById('alert-message');
+            const alertCloseBtn = document.getElementById('alert-close');
+
+            function showAlert(title, message) {
+                alertTitle.textContent = title;
+                alertMessage.textContent = message;
+                alertBox.classList.remove('hidden');
+            }
+
+            alertCloseBtn.addEventListener('click', () => {
+                alertBox.classList.add('hidden');
+            });
+
+            // Sample hardcoded listing data
+            let listings = [
+                { id: 1, name: 'Handmade Recycled Paper', category: 'Crafts', status: 'Active', price: 12.99, seller: 'EcoCrafter' },
+                { id: 2, name: 'Organic Cotton Blanket', category: 'Home Goods', status: 'Pending', price: 65.00, seller: 'GreenLiving' },
+                { id: 3, name: 'Upcycled Denim Bag', category: 'Accessories', status: 'Active', price: 35.50, seller: 'UrbanCycle' },
+                { id: 4, name: 'Reclaimed Wood Coasters', category: 'Home Goods', status: 'Active', price: 19.00, seller: 'WoodWorks' },
+                { id: 5, name: 'Soy Wax Candles', category: 'Home Goods', status: 'Sold', price: 22.00, seller: 'ScentedSouls' },
+            ];
+
+            // Function to render the listing list
+            const renderListings = (items) => {
+                listingsList.innerHTML = items.map(item => `
+                    <div class="listing-card bg-emerald-50 p-6 rounded-2xl flex flex-col md:flex-row items-center justify-between space-y-4 md:space-y-0 md:space-x-4 shadow-sm">
+                        <div class="flex items-center space-x-4 w-full md:w-auto">
+                            <div class="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-sm">
+                                <img src="https://placehold.co/64x64/4ADE80/ffffff?text=${encodeURIComponent(item.name.split(' ').slice(0, 2).join('+'))}" alt="${item.name}" class="rounded-xl">
+                            </div>
+                            <div>
+                                <h3 class="font-medium text-lg text-emerald-800">${item.name}</h3>
+                                <p class="text-sm text-emerald-600">Category: ${item.category}</p>
+                            </div>
+                        </div>
+                        <div class="text-center md:text-right space-y-1">
+                            <p class="font-semibold text-xl text-emerald-900">$${item.price.toFixed(2)}</p>
+                            <span class="text-xs font-semibold px-3 py-1 rounded-full ${item.status === 'Active' ? 'bg-green-200 text-green-800' : item.status === 'Pending' ? 'bg-blue-200 text-blue-800' : 'bg-red-200 text-red-800'}">
+                                ${item.status}
+                            </span>
+                        </div>
+                    </div>
+                `).join('');
+            };
+
+            // Initial render
+            renderListings(listings);
+
+            // Search functionality
+            searchInput.addEventListener('input', (e) => {
+                const query = e.target.value.toLowerCase();
+                const filteredListings = listings.filter(item => 
+                    item.name.toLowerCase().includes(query) || 
+                    item.category.toLowerCase().includes(query) ||
+                    item.seller.toLowerCase().includes(query)
+                );
+                renderListings(filteredListings);
+            });
+
+            // Sort functionality (by price)
+            sortButton.addEventListener('click', () => {
+                const sortedListings = [...listings].sort((a, b) => a.price - b.price);
+                renderListings(sortedListings);
+                showAlert('Sorted', 'Listings sorted by price.');
+            });
+
+            // Filter functionality (by status) - simple example
+            filterButton.addEventListener('click', () => {
+                const activeListings = listings.filter(item => item.status === 'Active');
+                if (activeListings.length > 0) {
+                    renderListings(activeListings);
+                    showAlert('Filtered', 'Showing only active listings.');
+                } else {
+                    renderListings([]);
+                    showAlert('No Active Listings', 'No active listings found.');
+                }
+            });
+
+            // Group by functionality - alerts user of future feature
+            groupByButton.addEventListener('click', () => {
+                showAlert('Coming Soon!', 'The "Group by" feature is not yet available.');
+            });
+
+            // Add new functionality - alerts user of future feature
+            addNewButton.addEventListener('click', () => {
+                showAlert('Coming Soon!', 'The "Add new" feature is not yet available.');
+            });
+
+            // Profile button functionality
+            profileButton.addEventListener('click', () => {
+                showAlert('User Profile', 'This would navigate you to your user profile page.');
+            });
+        });
+    </script>
+</body>
+</html>
